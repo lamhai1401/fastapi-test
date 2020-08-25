@@ -1,8 +1,27 @@
 from typing import Optional, List
 from fastapi import FastAPI, Body
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
+
+# CORS
+origins = [
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+    "http://0.0.0.0:8080",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 fake_items_db = [
     {"item_name": "Foo"},
     {"item_name": "Bar"},
@@ -97,3 +116,32 @@ async def update_item(
 @app.post("/offers/")
 async def create_offer(offer: Offer = Body(..., embed=True)):
     return offer
+
+
+class Response(BaseModel):
+    data: Optional[str] = None
+    success: bool = False
+    # message: str
+
+
+class Message(BaseModel):
+    message: str
+
+
+@app.get(
+    "/resp/{data}",
+    response_model=Response,
+    responses={404: {"model": Message}}
+)
+async def resp_data(data: Optional[str] = None):
+    if data != "":
+        return {
+            "data": data,
+            "success": True
+        }
+    return JSONResponse(
+        status_code=400,
+        content={
+            "message": "data is null"
+        }
+    )
