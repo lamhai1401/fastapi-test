@@ -1,5 +1,5 @@
 {
-    "python.venvPath": "/Users/lamhai/python/fastapi/venv",
+    "python.venvPath": "/Users/lamhai/python/fastapi-test/venv",
     "python.formatting.autopep8Path": "/usr/local/bin/pep8",
     "python.linting.pylintPath": "/usr/local/bin/pylint",
     "python.linting.enabled": true,

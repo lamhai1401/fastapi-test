@@ -1,8 +1,11 @@
 from typing import Optional, List
-from fastapi import FastAPI, Body
+from fastapi import FastAPI, Body, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
+
 
 app = FastAPI()
 
@@ -13,6 +16,8 @@ origins = [
     "http://0.0.0.0:8080",
 ]
 
+# app.add_middleware(HTTPSRedirectMiddleware)  # force redirect to https
+app.add_middleware(GZipMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -68,80 +73,89 @@ async def root():
     return {"message": "Hello World"}
 
 
-@app.get("/items/{item_id}")
-async def read_item(item_id):
-    return {"item_id": item_id}
+# @app.get("/items/{item_id}")
+# async def read_item(item_id):
+#     return {"item_id": item_id}
 
 
-@app.get("/items/")
-async def read_item(skip: int = 0, limit: int = 10):
-    return fake_items_db[skip: skip + limit]
+# @app.get("/items/")
+# async def read_item(skip: int = 0, limit: int = 10):
+#     return fake_items_db[skip: skip + limit]
 
 
-@app.post("/items/")
-async def create_item(item: Item):  # khai báo dưới dạng parameter
-    resp = item.dict()
-    if item.tax:
-        price_with_tax = item.price + item.tax
-        resp.update({"price_with_tax": price_with_tax})
-    return resp
+# @app.post("/items/")
+# async def create_item(item: Item):  # khai báo dưới dạng parameter
+#     resp = item.dict()
+#     if item.tax:
+#         price_with_tax = item.price + item.tax
+#         resp.update({"price_with_tax": price_with_tax})
+#     return resp
 
 
-@app.put("/items/{item_id}")
-async def create_item(item_id: int, item: Item):
-    return {"item_id": item_id, **item.dict()}
+# @app.put("/items/{item_id}")
+# async def create_item(item_id: int, item: Item):
+#     return {"item_id": item_id, **item.dict()}
 
 
-@app.patch("/item/")
-async def update_item(
-    *,
-    item_id: int,
-    item: Item,
-    user: User,
-    importance: int = Body(..., gt=0),
-    q: Optional[str] = None
-):
-    results = {
-        "item_id": item_id,
-        "item": item,
-        "user": user,
-        "importance": importance
-    }
+# @app.patch("/item/")
+# async def update_item(
+#     *,
+#     item_id: int,
+#     item: Item,
+#     user: User,
+#     importance: int = Body(..., gt=0),
+#     q: Optional[str] = None
+# ):
+#     results = {
+#         "item_id": item_id,
+#         "item": item,
+#         "user": user,
+#         "importance": importance
+#     }
 
-    if q:
-        results.update({"q": q})
-    return results
-
-
-@app.post("/offers/")
-async def create_offer(offer: Offer = Body(..., embed=True)):
-    return offer
+#     if q:
+#         results.update({"q": q})
+#     return results
 
 
-class Response(BaseModel):
-    data: Optional[str] = None
-    success: bool = False
-    # message: str
+# @app.post("/offers/")
+# async def create_offer(offer: Offer = Body(..., embed=True)):
+#     return offer
 
 
-class Message(BaseModel):
-    message: str
+# class Response(BaseModel):
+#     data: Optional[str] = None
+#     success: bool = False
+#     # message: str
 
 
-@app.get(
-    "/resp/{data}",
-    response_model=Response,
-    responses={404: {"model": Message}}
-)
-async def resp_data(data: Optional[str] = None):
-    if data != "":
-        return {
-            "data": data,
-            "success": True
-        }
-    return JSONResponse(
-        status_code=400,
-        content={
-            "message": "data is null"
-        }
-    )
+# class Message(BaseModel):
+#     message: str
+
+
+# responses = {
+#     404: {"description": "Item not found"},
+#     302: {"description": "The item was moved"},
+#     403: {"description": "Not enough privileges"},
+#     404: {"model": Message, "description": "The item was not found"},
+#     200: {
+#         "content": {"img/jpg": {}},
+#         "description": "Return the JSON item or an image.",
+#     }
+# }
+
+
+# @app.get(
+#     "/resp/{data}",
+#     response_model=Response,
+#     responses=responses
+# )
+# async def read_item(item_id: str, img: Optional[bool] = None):
+#     if item_id == "foo":
+#         return {"id": "foo", "value": "there goes my hero"}
+#     # if img:
+#     #     return FileResponse("img.jpg", media_type="image/jpg")
+#     else:
+#         return JSONResponse(
+#             status_code=status.HTTP_404_NOT_FOUND,
+#             content={"message": "Item not found"})
