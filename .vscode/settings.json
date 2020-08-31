@@ -1,8 +1,8 @@
 {
     // "python.envFile":	"${workspaceFolder}/venv",
-    "python.venvPath": "/Users/lamhai/python/fastapi-test/venv",
-    "python.formatting.autopep8Path": "/usr/local/bin/pep8",
-    "python.linting.pylintPath": "/usr/local/bin/pylint",
+    "python.venvPath": "/Users/lamhai/python/fastapi-test/.venv",
+    "python.formatting.autopep8Path": "/Users/lamhai/python/fastapi-test/.venv/bin/pep8",
+    "python.linting.pylintPath": "/Users/lamhai/python/fastapi-test/.venv/bin/pylint",
     "python.linting.enabled": true,
     "python.linting.lintOnSave": true,
     "python.linting.pylintEnabled": false,
@@ -12,4 +12,5 @@
     // ],
     "python.jediMemoryLimit": -1,
     "python.workspaceSymbols.rebuildOnFileSave": true,
+    "python.pythonPath": ".venv/bin/python",
 }
