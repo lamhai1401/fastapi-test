@@ -1,0 +1,28 @@
+# Use root/example as user/password credentials docker-compose -f stack.yml up docker-compose exec db /bin/bash
+version: '3.3'
+services:
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_HOST: 'db'
+      MYSQL_ROOT_HOST: 127.0.0.1
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: username
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: asynctest
+    healthcheck:
+      test: --health-cmd "mysqladmin ping" --health-interval 10s --health-timeout 5s --health-retries 10
+    ports:
+      - '3306:3306'
+    container_name: mysql
+    tty: true
+    networks:
+      network:
+        ipv4_address: 172.20.0.2
+networks:
+  network: #will be prefixed with 'parent_dir_name_' so for me, it will be 'mysql_network'
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
