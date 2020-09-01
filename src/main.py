@@ -1,9 +1,10 @@
 import uvicorn
-from .db import connectDB
+from .api import router
 from fastapi import FastAPI, Depends
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.middleware.cors import CORSMiddleware
+from .db import connectDB
 
 # CORS
 origins = [
@@ -31,3 +32,6 @@ app.add_middleware(
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
+
+#  this imports the route in the user into the main file
+app.include_router(router, prefix="/api")
