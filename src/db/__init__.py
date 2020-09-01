@@ -1,11 +1,24 @@
-# from tortoise import Tortoise
+from tortoise.contrib.fastapi import register_tortoise
+from fastapi import FastAPI
+
+# Config DB
+TORTOISE_ORM = {
+    "connections": {
+        "default": "mysql://username:password@127.0.0.1:3306/asynctest"
+    },
+    "apps": {
+        "models": {
+            "models": ["src.models"],
+            "default_connection": "default"
+        }
+    },
+}
 
 
-# async def init():
-#     await Tortoise.init(
-#         db_url='mysql://username:password@127.0.0.1:8080/asynctest',
-#         modules={'models:[src.models]'},
-#     )
-
-#     # Generate the schema
-#     await Tortoise.generate_schemas()
+def connectDB(app: FastAPI):
+    register_tortoise(
+        app=app,
+        config=TORTOISE_ORM,
+        generate_schemas=True,
+        add_exception_handlers=True
+    )
