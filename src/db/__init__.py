@@ -1,10 +1,12 @@
 from tortoise.contrib.fastapi import register_tortoise
+from src.core.config import DATABASE_URL
 from fastapi import FastAPI
+from loguru import logger
 
 # Config DB
 TORTOISE_ORM = {
     "connections": {
-        "default": "mysql://username:password@127.0.0.1:3306/asynctest"
+        "default": DATABASE_URL,
     },
     "apps": {
         "models": {
@@ -16,6 +18,7 @@ TORTOISE_ORM = {
 
 
 def connectDB(app: FastAPI):
+    logger.info("Connecting to {0}", repr(DATABASE_URL))
     register_tortoise(
         app=app,
         config=TORTOISE_ORM,

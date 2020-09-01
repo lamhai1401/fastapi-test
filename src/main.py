@@ -4,7 +4,8 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.middleware.cors import CORSMiddleware
-from .db import connectDB
+from src.core.event import create_start_app_handler
+from src.core.config import API_PREFIX
 
 # CORS
 origins = [
@@ -16,7 +17,7 @@ origins = [
 app = FastAPI(debug=False)
 
 # connecting to db
-connectDB(app=app)
+app.add_event_handler("startup", create_start_app_handler(app))
 
 # add middleware
 app.add_middleware(GZipMiddleware)
@@ -34,4 +35,4 @@ async def root():
     return {"message": "Hello World"}
 
 #  this imports the route in the user into the main file
-app.include_router(router, prefix="/api")
+app.include_router(router, prefix=API_PREFIX)
