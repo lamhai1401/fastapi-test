@@ -18,11 +18,3 @@ services:
       - '3306:3306'
     container_name: mysql
     tty: true
-    networks:
-      network:
-        ipv4_address: 172.20.0.2
-networks:
-  network: #will be prefixed with 'parent_dir_name_' so for me, it will be 'mysql_network'
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
