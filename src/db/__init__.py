@@ -6,33 +6,11 @@ from loguru import logger
 from tortoise.contrib.fastapi import register_tortoise
 
 # Config DB
+
 TORTOISE_ORM = {
     "connections": {
-        # "default": {
-        #     "engine": "tortoise.backends.aiomysql",
-        #     "credentials": {
-        #         "host": "127.0.0.1",
-        #         "port": "3306",
-        #         "user": "username",
-        #         "password": "password",
-        #         "database": "asynctest"
-        #     }
-        # },
-        "default": DATABASE_URL
-    },
-    "apps": {
-        "models": {
-            "models": ['src.models'],
-            "default_connection": "default"
-        }
-    },
-}
-
-
-TORTOISE_ORM_1 = {
-    "connections": {
         "default": {
-            "engine": "tortoise.backends.mysql.client.MySQLClientl",
+            "engine": "tortoise.backends.mysql",
             "credentials": {
                 "host": HOST,
                 "port": PORT,
@@ -70,7 +48,7 @@ async def init_orm() -> None:
         # _create_db=True,
     )
     await Tortoise.generate_schemas()
-    logger.info('Tortoise-ORM started, ${}, ${}'.format(Tortoise._connections, Tortoise.apps))
+    logger.info('Tortoise-ORM started, {}, {}'.format(Tortoise._connections, Tortoise.apps))
     # register_tortoise(
     #     app=app,
     #     config=TORTOISE_ORM,
