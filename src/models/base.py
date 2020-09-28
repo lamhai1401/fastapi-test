@@ -8,3 +8,7 @@ class Base(models.Model):
     '''
     created_at = fields.DatetimeField(auto_now_add=True)
     modified_at = fields.DatetimeField(auto_now=True)
+
+    class Config:
+        ignore_extra = True
+        # allow_population_by_alias = True
