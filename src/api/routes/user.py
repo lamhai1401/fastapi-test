@@ -27,8 +27,8 @@ async def get_user(user_id: int):
         return await User_Pydantic.from_queryset_single(User.get(id=user_id))
     except Exception as ex:
         raise HTTPException(
-                status_code=404,
-                detail="User with id {} not found err: {}".format(user_id, ex)
+            status_code=404,
+            detail="User with id {} not found err: {}".format(user_id, ex)
         )
 
 
@@ -44,8 +44,8 @@ async def update_user(user_id: int, user: UserIn_Pydantic):
         return result.copy(include={'username', 'display_name'})
     except Exception as ex:
         raise HTTPException(
-                status_code=404,
-                detail="Update user with id {} failed: {}".format(user_id, ex))
+            status_code=404,
+            detail="Update user with id {} failed: {}".format(user_id, ex))
 
 
 @router.delete(
