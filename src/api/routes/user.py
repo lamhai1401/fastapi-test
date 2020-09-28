@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from typing import List
 from fastapi import HTTPException
 from tortoise.contrib.fastapi import HTTPNotFoundError
-from src.models.user import User, UserIn_Pydantic, User_Pydantic
+from src.models import User, UserIn_Pydantic, User_Pydantic, Response
 router = APIRouter()
 
 
@@ -46,3 +46,15 @@ async def update_user(user_id: int, user: UserIn_Pydantic):
         raise HTTPException(
                 status_code=404,
                 detail="Update user with id {} failed: {}".format(user_id, ex))
+
+
+@router.delete(
+    "/{user_id}",
+    response_model=Response,
+    responses={404: {"model": HTTPNotFoundError}}
+)
+async def delete_user(user_id: int):
+    deleted_count = await User.filter(id=user_id).delete()
+    if not deleted_count:
+        raise HTTPException(status_code=404, detail=f"User {user_id} not found")  # noqa: E501
+    return Response(message=f"Deleted user {user_id}")
