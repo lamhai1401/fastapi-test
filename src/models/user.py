@@ -20,7 +20,7 @@ class User(Base):
 
     class PydanticMeta:
         computed = ["full_name"]
-        exclude = ["password_hash"]
+        # exclude = ["password_hash"]
 
     class Meta:
         table = "user"

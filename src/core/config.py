@@ -15,7 +15,7 @@ DEBUG: bool = config("DEBUG", cast=bool, default=False)
 
 # db config
 DATABASE_URL: str = os.getenv("DB_CONNECTION") or config("DB_CONNECTION", cast=str)  # noqa: E501
-HOST: str = os.getenv("HOST") or config("HOST",  cast=str,  default="127.0.0.1")  # noqa: E501
+HOST: str = os.getenv("HOST") or config("HOST", cast=str, default="127.0.0.1")  # noqa: E501
 PORT: int = int(os.getenv("PORT")) if "PORT" in os.environ else config("PORT", cast=int, default=3306)  # noqa: E501
 USER: str = os.getenv("USER") or config("USER", cast=str, default="username")
 PWD: str = os.getenv("PWD") or config("PWD", cast=str, default="password")
