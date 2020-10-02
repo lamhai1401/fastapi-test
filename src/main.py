@@ -10,7 +10,10 @@ from src.api.errors.http_error import http_error_handler
 from src.api.errors.validation_error import http422_error_handler
 from src.core.event import create_start_app_handler, create_end_app_handler
 from src.core.config import API_PREFIX
-
+from src.auth.oauth2 import Token, authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, timedelta
+from fastapi.security import OAuth2PasswordRequestForm
+from src.utils import errors
+from jose import JWTError
 
 # CORS
 origins = [
@@ -41,6 +44,19 @@ app.add_middleware(
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
+
+
+@app.post("/token", response_model=Token)
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+    user = await authenticate_user(form_data.username, form_data.password)
+    if not user:
+        raise errors.Error401("Incorrect username or password")
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.username}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
 
 #  this imports the route in the user into the main file
 app.include_router(router, prefix=API_PREFIX)
